@@ -16,6 +16,15 @@ class CarForm {
   String toString() => 'CarForm(name: $name, power: $power)';
 }
 
+// TODO Интересные поля формы:
+// https://pub.dev/packages/dropdown_formfield
+// https://pub.dev/packages/datetime_picker_formfield
+// https://pub.dev/packages/checkbox_formfield
+
+// TODO Генераторы форм:
+// https://pub.dev/packages/reactive_forms
+// https://pub.dev/packages/flutter_form_builder/
+
 // TODO В каждом поле есть метод onSave
 
 // class PrototypeCarForm extends StatelessWidget {

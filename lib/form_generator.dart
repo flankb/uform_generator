@@ -13,7 +13,6 @@ class FormGenerator extends GeneratorForAnnotation<UForm> {
   String generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {
     //throw Exception("Нуну!");
-
     //return "final i = 78;";
 
     if (element.kind != ElementKind.CLASS) {
