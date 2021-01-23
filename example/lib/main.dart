@@ -1,4 +1,9 @@
+//import 'dart:html';
+
+import 'package:example/models/car_form.dart';
 import 'package:flutter/material.dart';
+
+import 'form_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -51,6 +56,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  String _orderedCar = "Unordered";
 
   void _incrementCounter() {
     setState(() {
@@ -98,12 +104,23 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'You have pushed the button this many times:',
+              'You ordered car:',
             ),
             Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+              '$_orderedCar',
+              //style: Theme.of(context).textTheme.headline4,
             ),
+            ElevatedButton(
+              onPressed: () async {
+                final editedCar = await Navigator.push<CarForm>(context,
+                    MaterialPageRoute(builder: (context) => FormPage()));
+
+                setState(() {
+                  _orderedCar = editedCar.toString();
+                });
+              },
+              child: Text('Open form'),
+            )
           ],
         ),
       ),

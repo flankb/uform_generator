@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
 import 'package:uform_generator/annotations.dart';
 
 part 'car_form.g.dart';
@@ -10,7 +11,12 @@ class CarForm {
   final int power;
 
   CarForm(this.name, this.power);
+
+  @override
+  String toString() => 'CarForm(name: $name, power: $power)';
 }
+
+// TODO В каждом поле есть метод onSave
 
 // class PrototypeCarForm extends StatelessWidget {
 //   final _formKey = GlobalKey<FormState>();
