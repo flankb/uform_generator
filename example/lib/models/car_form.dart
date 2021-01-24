@@ -1,5 +1,7 @@
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 
 import 'package:uform_generator/annotations.dart';
 
@@ -9,11 +11,13 @@ part 'car_form.g.dart';
 class CarForm {
   final String name;
   final int power;
+  final DateTime orderDate;
 
-  CarForm(this.name, this.power);
+  CarForm(this.name, this.power, this.orderDate);
 
   @override
-  String toString() => 'CarForm(name: $name, power: $power)';
+  String toString() =>
+      'CarForm(name: $name, power: $power, orderDate: $orderDate)';
 }
 
 // TODO Интересные поля формы:
@@ -27,8 +31,20 @@ class CarForm {
 
 // TODO В каждом поле есть метод onSave
 
+// TODO М.б. лучше использовать  onSaved: (value) => _note = value, где _note - это поле внутри state
+// Тогда можно не использовать TextEditingController
+
 // class PrototypeCarForm extends StatelessWidget {
 //   final _formKey = GlobalKey<FormState>();
+
+// Пример из todo, при сабмите форм (автора flutter_bloc):
+/*
+                          if (_formKey.currentState.validate()) {
+                          _formKey.currentState.save();
+                          widget.onSave(_task, _note);
+                          Navigator.pop(context);
+                  }
+                  */
 
 //   @override
 //   Widget build(BuildContext context) {

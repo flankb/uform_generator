@@ -108,6 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_orderedCar',
+              textAlign: TextAlign.center,
               //style: Theme.of(context).textTheme.headline4,
             ),
             ElevatedButton(
