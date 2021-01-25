@@ -8,9 +8,26 @@ import 'package:uform_generator/annotations.dart';
 
 part 'car_form.g.dart';
 
+FormFieldValidator<String> validatorNotEmpty = (value) {
+  if (value.isEmpty) {
+    return 'Please enter some text';
+  }
+  return null;
+};
+
+FormFieldValidator<DateTime> validatorDate = (value) {
+  if (value.isBefore(DateTime(2001, 10, 10))) {
+    return 'Low date!';
+  }
+
+  return null;
+};
+
 @UForm()
 class CarForm {
+  @UFormField(validator: 'validatorNotEmpty', fieldName: 'Модель машины:')
   final String name;
+
   final int power;
   final DateTime orderDate;
 

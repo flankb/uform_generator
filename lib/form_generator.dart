@@ -1,24 +1,15 @@
-// Copyright (c) 2018, the Dart project authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
-
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
-//import 'package:flutter/foundation.dart';
-//import 'package:flutter/cupertino.dart';
 import 'package:source_gen/source_gen.dart';
-
+import 'utils.dart';
 import 'annotations.dart';
 
 class FormGenerator extends GeneratorForAnnotation<UForm> {
   @override
   String generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {
-    //throw Exception("Нуну!");
-    //return "final i = 78;";
-
     if (element.kind != ElementKind.CLASS) {
-      throw Exception("Это не класс!");
+      throw Exception("This is not a class!");
     }
 
     final formClass = element as ClassElement;
@@ -32,19 +23,22 @@ class FormGenerator extends GeneratorForAnnotation<UForm> {
     List<String> controllersInit = [];
     List<String> controllersFallback = [];
 
-    // List controllers,
-    //List controllerInit, List controllersFallback
-
-    formClass.fields.forEach((elementField) {
-      // Form field available types:
-      // String
-      // double
-      // int
-      // DateTime
-
-      // debugPrint("Ttt " + elementField.type.toString());
-
+    formClass.fields.forEach((FieldElement elementField) {
       //final classElement = elementField.type.element as ClassElement;
+
+      var validator;
+      var fieldName = elementField.name;
+      var fieldCaption = elementField.name;
+
+      if (elementField.hasAnnotation(UFormField)) {
+        final uformObject = elementField.getAnnotation(UFormField);
+
+        // 1. Get field name
+        fieldCaption = uformObject.getField(FIELD_NAME).toStringValue();
+
+        // 2. Get validator
+        validator = uformObject.getField(VALIDATOR).toStringValue();
+      }
 
       Type fieldType;
 
@@ -61,13 +55,11 @@ class FormGenerator extends GeneratorForAnnotation<UForm> {
         throw Exception('Unsupported type!');
       }
 
-      final fieldName = elementField.name;
-      //fieldsBuffer.writeln(_buildTextFieldForm(textFieldName));
-
       if (fieldType == DateTime) {
-        fields.add(_buildDateTimeFieldForm(fieldName));
+        fields.add(_buildDateTimeFieldForm(fieldName, fieldCaption, validator));
       } else {
-        fields.add(_buildTextFieldForm(fieldName, fieldType));
+        fields.add(
+            _buildTextFieldForm(fieldName, fieldType, fieldCaption, validator));
       }
 
       controllers.add(_buildControllerDefinition(fieldName));
@@ -80,50 +72,53 @@ class FormGenerator extends GeneratorForAnnotation<UForm> {
     final formCode = _buildFormTemplate(
         formName, fields, controllers, controllersInit, controllersFallback);
 
-    //return '/*' + formCode + '*/';
-    return formCode;
+    return '/*' + formCode + '*/';
+    //return formCode;
   }
 }
 
-String _buildTextFieldForm(String fieldName, Type fieldType) {
+String _buildValidatorDefinition(String validator) {
+  return validator == null || validator == ''
+      ? ''
+      : '''validator: $validator,
+  ''';
+}
+
+String _buildTextFieldForm(
+    String fieldName, Type fieldType, String captionField, String validator) {
   final keyboard = fieldType == int || fieldType == double
       ? '''inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           keyboardType: TextInputType.number,'''
       : '';
 
+  final validatorDef = _buildValidatorDefinition(validator);
+
   final field = '''
     TextFormField(
+                controller: _${fieldName}TextEditingController,
                 decoration: const InputDecoration(
-                  labelText: '$fieldName',
+                  labelText: '$captionField',
                 ),
                 $keyboard
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
+                $validatorDef
               ),
   ''';
 
   return field;
 }
 
-String _buildDateTimeFieldForm(String fieldName) {
+String _buildDateTimeFieldForm(
+    String fieldName, String captionField, String validator) {
+  final validatorDef = _buildValidatorDefinition(validator);
+
   final field = '''
    DateTimeField(
             format: format,
             controller: _${fieldName}TextEditingController,
             decoration: const InputDecoration(
-              labelText: '$fieldName',
+              labelText: '$captionField',
             ),
-            validator: (value) {
-              if (value.isBefore(DateTime(2001, 10, 10))) {
-                return 'Low date!';
-              }
-
-              return null;
-            },
+            $validatorDef
             onShowPicker: (context, currentValue) {
               return showDatePicker(
                   context: context,
