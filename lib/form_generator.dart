@@ -72,8 +72,8 @@ class FormGenerator extends GeneratorForAnnotation<UForm> {
     final formCode = _buildFormTemplate(
         formName, fields, controllers, controllersInit, controllersFallback);
 
-    return '/*' + formCode + '*/';
-    //return formCode;
+    //return '/*' + formCode + '*/';
+    return formCode;
   }
 }
 
