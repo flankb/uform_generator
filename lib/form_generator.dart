@@ -77,7 +77,7 @@ class FormGenerator extends GeneratorForAnnotation<UForm> {
 
     //final formCode = _buildTemplate(formName, fieldsBuffer.toString());
 
-    final formCode = _buildTemplate2(
+    final formCode = _buildFormTemplate(
         formName, fields, controllers, controllersInit, controllersFallback);
 
     //return '/*' + formCode + '*/';
@@ -178,86 +178,7 @@ String _buildFallbackItem(String fieldName, Type fieldType) {
   return '';
 }
 
-String _buildTemplate(String formName, String fields) {
-  final formTemplate = '''class ${formName}Form extends StatelessWidget {
-      final _formKey = GlobalKey<FormState>();
-
-      @override
-      Widget build(BuildContext context) {
-        return Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              $fields
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState.validate()) {
-                    }
-                  },
-                  child: Text('Submit'),
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-    }''';
-
-  return formTemplate;
-}
-
-//  TextFormField(
-//             controller: _nameTextEditingController,
-//             decoration: const InputDecoration(
-//               labelText: 'name',
-//             ),
-//             validator: (value) {
-//               if (value.isEmpty) {
-//                 return 'Please enter some text';
-//               }
-//               return null;
-//             },
-//           ),
-//           TextFormField(
-//             controller: _powerTextEditingController,
-//             decoration: const InputDecoration(
-//               labelText: 'power',
-//             ),
-//             validator: (value) {
-//               if (value.isEmpty) {
-//                 return 'Please enter some text';
-//               }
-
-//               return null;
-//             },
-//           ),
-
-//  DateTimeField(
-//             format: format,
-//             controller: _orderDateTextEditingController,
-//             decoration: const InputDecoration(
-//               labelText: 'date',
-//             ),
-//             validator: (value) {
-//               if (value.isBefore(DateTime(2001, 10, 10))) {
-//                 return 'Low date!';
-//               }
-
-//               return null;
-//             },
-//             onShowPicker: (context, currentValue) {
-//               return showDatePicker(
-//                   context: context,
-//                   firstDate: DateTime(1900),
-//                   initialDate: currentValue ?? DateTime.now(),
-//                   lastDate: DateTime(2100));
-//             },
-//           ),
-
-String _buildTemplate2(String formName, List fields, List controllers,
+String _buildFormTemplate(String formName, List fields, List controllers,
     List controllerInit, List controllersFallback) {
   final formTemplate = '''
 class ${formName}Form extends StatefulWidget {
