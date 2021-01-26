@@ -16,7 +16,7 @@ class _FormPageState extends State<FormPage> {
   void initState() {
     super.initState();
 
-    _formModel = CarForm("Bmw M3", 350, DateTime.now());
+    _formModel = CarForm("Bmw M3", 350, DateTime.now(), 2.5);
   }
 
   @override

@@ -15,7 +15,25 @@ FormFieldValidator<String> validatorNotEmpty = (value) {
   return null;
 };
 
+FormFieldValidator<String> validatorNoZero = (value) {
+  final parsedDigit = num.tryParse(value);
+
+  if (parsedDigit == null) {
+    return 'Parsing error!';
+  }
+
+  if (parsedDigit <= 0) {
+    return 'Value must be more than 0!';
+  }
+
+  return null;
+};
+
 FormFieldValidator<DateTime> validatorDate = (value) {
+  if (value == null) {
+    return "Value must not be a null!";
+  }
+
   if (value.isBefore(DateTime(2001, 10, 10))) {
     return 'Low date!';
   }
@@ -25,15 +43,22 @@ FormFieldValidator<DateTime> validatorDate = (value) {
 
 @UForm()
 class CarForm {
-  @UFormField(validator: 'validatorNotEmpty', fieldName: 'Модель машины:')
+  @UFormField(validator: 'validatorNotEmpty', fieldName: 'Model of car')
   final String name;
 
+  @UFormField(validator: 'validatorNoZero', fieldName: 'Engine power')
   final int power;
+
+  @UFormField(validator: 'validatorDate', fieldName: 'Order date')
   final DateTime orderDate;
 
-  CarForm(this.name, this.power, this.orderDate);
+  @UFormField(validator: 'validatorNoZero', fieldName: 'Mass')
+  final double mass;
+
+  CarForm(this.name, this.power, this.orderDate, this.mass);
 
   @override
-  String toString() =>
-      'CarForm(name: $name, power: $power, orderDate: $orderDate)';
+  String toString() {
+    return 'CarForm(name: $name, power: $power, orderDate: $orderDate, mass: $mass)';
+  }
 }
