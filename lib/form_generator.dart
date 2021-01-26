@@ -16,16 +16,12 @@ class FormGenerator extends GeneratorForAnnotation<UForm> {
 
     final formName = formClass.name;
 
-    //StringBuffer fieldsBuffer = StringBuffer();
-
     List<String> fields = [];
     List<String> controllers = [];
     List<String> controllersInit = [];
     List<String> controllersFallback = [];
 
     formClass.fields.forEach((FieldElement elementField) {
-      //final classElement = elementField.type.element as ClassElement;
-
       var validator;
       var fieldName = elementField.name;
       var fieldCaption = elementField.name;
@@ -86,8 +82,19 @@ String _buildValidatorDefinition(String validator) {
 
 String _buildTextFieldForm(
     String fieldName, Type fieldType, String captionField, String validator) {
+  var formatter = '';
+  switch (fieldType) {
+    case double:
+      formatter = r'^-?(\\d+(\\.|,)?\\d*)?';
+      break;
+    case int:
+      formatter = r'^-?(\\d+)?';
+      break;
+    default:
+  }
+
   final keyboard = fieldType == int || fieldType == double
-      ? '''inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      ? '''inputFormatters: [FilteringTextInputFormatter.allow(RegExp('$formatter'))],
           keyboardType: TextInputType.number,'''
       : '';
 
@@ -115,6 +122,7 @@ String _buildDateTimeFieldForm(
    DateTimeField(
             format: format,
             controller: _${fieldName}TextEditingController,
+            initialValue: widget.formModel.$fieldName,
             decoration: const InputDecoration(
               labelText: '$captionField',
             ),
@@ -229,5 +237,3 @@ class _${formName}FormState extends State<${formName}Form> {
 
   return formTemplate;
 }
-
-//final f = ;
