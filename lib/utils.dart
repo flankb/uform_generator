@@ -14,3 +14,5 @@ extension AnnotationChecker on Element {
 }
 
 TypeChecker _typeChecker(final Type type) => TypeChecker.fromRuntime(type);
+
+TypeChecker typeChecker(final Type type) => TypeChecker.fromRuntime(type);

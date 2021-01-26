@@ -29,10 +29,7 @@ class FormGenerator extends GeneratorForAnnotation<UForm> {
       if (elementField.hasAnnotation(UFormField)) {
         final uformObject = elementField.getAnnotation(UFormField);
 
-        // 1. Get field name
         fieldCaption = uformObject.getField(FIELD_NAME).toStringValue();
-
-        // 2. Get validator
         validator = uformObject.getField(VALIDATOR).toStringValue();
       }
 
@@ -63,8 +60,6 @@ class FormGenerator extends GeneratorForAnnotation<UForm> {
       controllersFallback.add(_buildFallbackItem(fieldName, fieldType));
     });
 
-    //final formCode = _buildTemplate(formName, fieldsBuffer.toString());
-
     final formCode = _buildFormTemplate(
         formName, fields, controllers, controllersInit, controllersFallback);
 
@@ -82,21 +77,27 @@ String _buildValidatorDefinition(String validator) {
 
 String _buildTextFieldForm(
     String fieldName, Type fieldType, String captionField, String validator) {
-  var formatter = '';
-  switch (fieldType) {
-    case double:
-      formatter = r'^-?(\\d+(\\.|,)?\\d*)?';
-      break;
-    case int:
-      formatter = r'^-?(\\d+)?';
-      break;
-    default:
-  }
+  final numTypes = [int, double];
 
-  final keyboard = fieldType == int || fieldType == double
-      ? '''inputFormatters: [FilteringTextInputFormatter.allow(RegExp('$formatter'))],
-          keyboardType: TextInputType.number,'''
-      : '';
+  var keyboard = '';
+
+  if (numTypes.contains(fieldType)) {
+    var formatter = '';
+
+    switch (fieldType) {
+      case double:
+        formatter = r'^-?(\\d+(\\.|,)?\\d*)?';
+        break;
+      case int:
+        formatter = r'^-?(\\d+)?';
+        break;
+      default:
+    }
+
+    keyboard =
+        '''inputFormatters: [FilteringTextInputFormatter.allow(RegExp('$formatter'))],
+                    keyboardType: TextInputType.number,''';
+  }
 
   final validatorDef = _buildValidatorDefinition(validator);
 
